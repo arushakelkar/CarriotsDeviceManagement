@@ -1,0 +1,122 @@
+<!--This file contains code to send carriots data stream from html to carriots using javascript to create data streams in carriots-->
+<!--This code asks the robot for data stream mentioning if it is active or no,It has a function which retrieves the last data stream from the device after some delay to know if it active or not-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+
+
+<head>
+
+    <title>Example Send Stream Carriots with Javascript</title>
+
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+
+</head>
+
+
+
+<body>
+
+    <div id='response'>
+
+        Waiting ...
+
+    </div>
+    <form>
+         <input type="button" onclick="sendrequest()" value="Want Info about Device" />
+      </form>
+
+<p id="demo"></p>
+<p id="active"></p>
+
+
+</body>
+
+
+
+<script type="text/javascript">
+
+
+function sendrequest(){
+    var stream = {
+
+        'protocol': 'v2',
+
+        'at': 'now',
+
+        'device': 'defaultDevice@arushakelkar.arushakelkar',
+
+        'data': {'checkactivestatus': 1,
+        },
+
+        'checksum' : ''
+
+    }
+
+    function callbackAjax2(text, status) {
+        document.getElementById("active").innerHTML = text;
+    }
+    function callAjax2(url, callback) {
+        var xmlhttp;
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function(){
+            callback(xmlhttp.responseText, xmlhttp.status);
+        }
+        xmlhttp.open("GET", url, true);
+        xmlhttp.setRequestHeader('carriots.apikey', '81f44ea27672788ea5a80797ad5aff9e170c1e6df946e8c1e39a6784ee336fe7');
+        xmlhttp.send();
+    }
+   // function timeFunction() {
+     //       setTimeout(callAjax2('https://api.carriots.com/streams/?max=2&sort=at&order=-1',callbackAjax2), 50000);
+       //  }
+
+
+    function callbackAjax(text, status) {
+
+        document.getElementById("response").innerHTML = text;
+        if(text){
+            
+                //document.getElementById("demo").innerHTML = "LALALALA";
+                setTimeout( function(){callAjax2('https://api.carriots.com/streams/?max=1&sort=at&order=-1',callbackAjax2)}, 10000);
+                timeFunction();
+                //callAjax2('https://api.carriots.com/streams/?max=1&sort=at&order=-1', callbackAjax2);
+        }
+
+    }
+
+
+
+    function callAjax(url, stream, callback) {
+
+        var xmlhttp;
+
+        xmlhttp = new XMLHttpRequest();
+
+        xmlhttp.onreadystatechange = function(){
+
+            callback(xmlhttp.responseText, xmlhttp.status);
+
+        }
+
+        xmlhttp.open("POST", url, true);
+
+        xmlhttp.setRequestHeader('carriots.apikey', '81f44ea27672788ea5a80797ad5aff9e170c1e6df946e8c1e39a6784ee336fe7');
+
+        xmlhttp.send(JSON.stringify(stream));
+
+    }
+
+
+
+    callAjax('https://api.carriots.com/streams', stream, callbackAjax);
+}
+
+
+</script>
+
+
+
+</html>
